@@ -15,6 +15,27 @@ public class TileTexturer : MonoBehaviour
 	/// </summary>
 	[SerializeField]
 	private List<TextureTile> textureTiles;
+	private Material _myMaterial;
+	
+	/// <summary>
+	/// Gets material generated for this TileTexturer.
+	/// </summary>
+	/// <value>
+	/// Material with texture.
+	/// </value>
+	public Material MyMaterial {
+		get {
+			if (_myMaterial == null) {
+				Shader shader = Shader.Find ("Unlit/Texture");
+				_myMaterial = new Material (shader);
+				_myMaterial.mainTexture = texture;
+#if UNITY_EDITOR
+				_myMaterial.hideFlags = HideFlags.DontSave;
+#endif
+			}
+			return _myMaterial;
+		}
+	}
 	
 	/// <summary>
 	/// Gets the list storing texture tiles.

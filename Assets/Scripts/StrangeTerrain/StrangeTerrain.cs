@@ -3,14 +3,16 @@ using System.Collections;
 
 public class StrangeTerrain : MonoBehaviour
 {
-	//[SerializeField]
+	[SerializeField]
 	private StrangeTerrainTile[,] tiles;
-	//[SerializeField]
-	private int width = 64;
-	//[SerializeField]
-	private int height = 64;
-	//[SerializeField]
-	private float tileSize = 2f;
+	[SerializeField]
+	private int width;
+	[SerializeField]
+	private int height;
+	[SerializeField]
+	private float tileSize;
+	[SerializeField]
+	private TileTexturer tileTexturer;
 	
 	public StrangeTerrainTile[,] Tiles {
 		get {
@@ -21,7 +23,7 @@ public class StrangeTerrain : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-	
+		RefreshMesh ();
 	}
 	
 	// Update is called once per frame
@@ -44,8 +46,18 @@ public class StrangeTerrain : MonoBehaviour
 			}
 		}
 		
+		// Set Material
+		renderer.material = tileTexturer.MyMaterial;
+		
 		// CreateMesh
-		GetComponent<MeshFilter> ().mesh = CreateMesh ();
+		if (GetComponent<MeshFilter> ().sharedMesh != null) {
+			if (Application.isPlaying) {
+				Destroy (GetComponent<MeshFilter> ().sharedMesh);
+			} else {
+				DestroyImmediate (GetComponent<MeshFilter> ().sharedMesh);
+			}
+		}
+		GetComponent<MeshFilter> ().sharedMesh = CreateMesh ();
 	}
 	
 	public Mesh CreateMesh ()
@@ -66,7 +78,7 @@ public class StrangeTerrain : MonoBehaviour
 		newMesh.name = "Strange Terrain";
 		
 		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
+			for (int j = 0; j < height; j++) {				
 				int firstVertIndex = (i * height + j) * 4;
 				
 				Vector3[] verticesAtTile = GetVerticesAtTile (i, j);
@@ -76,10 +88,12 @@ public class StrangeTerrain : MonoBehaviour
 				vertices [firstVertIndex + 2] = verticesAtTile [2];
 				vertices [firstVertIndex + 3] = verticesAtTile [3];
 				
-				uvs [firstVertIndex] = new Vector2 (0,0);
-				uvs [firstVertIndex + 1] = new Vector2 (0,1);
-				uvs [firstVertIndex + 2] = new Vector2 (1,1);
-				uvs [firstVertIndex + 3] = new Vector2 (1,0);
+				TextureTile tt = tileTexturer.TextureTiles [tiles [i, j].textureIndex];
+				
+				uvs [firstVertIndex] = tt.uv0;
+				uvs [firstVertIndex + 1] = tt.uv1;
+				uvs [firstVertIndex + 2] = tt.uv2;
+				uvs [firstVertIndex + 3] = tt.uv3;
 				
 				int firstTriangleIndex = (i * height + j) * 6;
 				
