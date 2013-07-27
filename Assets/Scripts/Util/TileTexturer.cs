@@ -26,7 +26,7 @@ public class TileTexturer : MonoBehaviour
 	public Material MyMaterial {
 		get {
 			if (_myMaterial == null) {
-				Shader shader = Shader.Find ("Unlit/Texture");
+				Shader shader = Shader.Find ("Diffuse");
 				_myMaterial = new Material (shader);
 				_myMaterial.mainTexture = texture;
 #if UNITY_EDITOR

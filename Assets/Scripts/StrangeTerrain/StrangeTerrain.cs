@@ -212,7 +212,7 @@ public class StrangeTerrain : MonoBehaviour
 			0f,
 			(tileYIndex + (isYEven ? halfTileOffsetZ : 0)) * tileSize
 		);
-		Debug.Log (point + " " + ret);
+		
 		return ret;
 	}
 }
