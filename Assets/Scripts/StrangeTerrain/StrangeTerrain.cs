@@ -13,6 +13,26 @@ public class StrangeTerrain : MonoBehaviour
 	private float tileSize;
 	[SerializeField]
 	private TileTexturer tileTexturer;
+	private MeshFilter _myMeshFilter;
+	private MeshCollider _myMeshCollider;
+	
+	private MeshFilter MyMeshFilter {
+		get {
+			if (_myMeshFilter == null) {
+				_myMeshFilter = GetComponent<MeshFilter> ();
+			}
+			return _myMeshFilter;
+		}
+	}
+
+	private MeshCollider MyMeshCollider {
+		get {
+			if (_myMeshCollider == null) {
+				_myMeshCollider = GetComponent<MeshCollider> ();
+			}
+			return _myMeshCollider;
+		}
+	}
 	
 	public StrangeTerrainTile[,] Tiles {
 		get {
@@ -29,7 +49,7 @@ public class StrangeTerrain : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-	
+		
 	}
 	
 	public void RefreshMesh ()
@@ -50,14 +70,17 @@ public class StrangeTerrain : MonoBehaviour
 		renderer.material = tileTexturer.MyMaterial;
 		
 		// CreateMesh
-		if (GetComponent<MeshFilter> ().sharedMesh != null) {
+		if (MyMeshFilter.sharedMesh != null) {
 			if (Application.isPlaying) {
-				Destroy (GetComponent<MeshFilter> ().sharedMesh);
+				Destroy (MyMeshFilter.sharedMesh);
 			} else {
-				DestroyImmediate (GetComponent<MeshFilter> ().sharedMesh);
+				DestroyImmediate (MyMeshFilter.sharedMesh);
 			}
 		}
-		GetComponent<MeshFilter> ().sharedMesh = CreateMesh ();
+		MyMeshFilter.sharedMesh = CreateMesh ();
+		
+		// Collider
+		MyMeshCollider.sharedMesh = MyMeshFilter.sharedMesh;
 	}
 	
 	public Mesh CreateMesh ()
@@ -166,6 +189,30 @@ public class StrangeTerrain : MonoBehaviour
 				)
 		};
 		
+		return ret;
+	}
+	
+	public Vector3 GetTileCenterAtPoint (Vector3 point)
+	{
+		Vector3 ret = new Vector3 ();
+		
+		// If width or height are even halftile offset should be added to center of tile.
+		// If width or height are odd halftile offset should be added to target point
+		bool isXEven = (width % 2) == 0;
+		bool isYEven = (height % 2) == 0;
+		
+		float halfTileOffsetX = point.x > 0 ? 0.5f : -0.5f;
+		float halfTileOffsetZ = point.z > 0 ? 0.5f : -0.5f;
+		
+		int tileXIndex = (int)(((isXEven ? 0 : halfTileOffsetX) * tileSize + point.x) / tileSize);
+		int tileYIndex = (int)(((isYEven ? 0 : halfTileOffsetZ) * tileSize + point.z) / tileSize);
+		
+		ret = new Vector3 (
+			(tileXIndex + (isXEven ? halfTileOffsetX : 0)) * tileSize,
+			0f,
+			(tileYIndex + (isYEven ? halfTileOffsetZ : 0)) * tileSize
+		);
+		Debug.Log (point + " " + ret);
 		return ret;
 	}
 }

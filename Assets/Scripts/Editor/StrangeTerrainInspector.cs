@@ -3,17 +3,20 @@ using UnityEditor;
 using System.Collections;
 
 [CustomEditor(typeof(StrangeTerrain))]
-public class StrangeTerrainInspector : Editor {
+public class StrangeTerrainInspector : Editor
+{
 	
 	StrangeTerrain myTarget;
 	
-	void Awake () {
+	void Awake ()
+	{
 		myTarget = target as StrangeTerrain;
 	}
 	
-	public override void OnInspectorGUI () {
-		if (GUILayout.Button("Refresh Terrain")) {
-			myTarget.RefreshMesh();
+	public override void OnInspectorGUI ()
+	{
+		if (GUILayout.Button ("Refresh Terrain")) {
+			myTarget.RefreshMesh ();
 		}
 	}
 }
