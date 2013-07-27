@@ -51,6 +51,23 @@ public class TileTexturer : MonoBehaviour
 			return this.textureTiles;
 		}
 	}
+	
+	public Texture2D GetTileAsTexture (int id)
+	{
+		Texture2D ret;
+		TextureTile tt = TextureTiles [id];
+		
+		int width = (int)(texture.width * (tt.uv3.x - tt.uv0.x));
+		int height = (int)(texture.height * (tt.uv1.y - tt.uv0.y));
+		
+		Color[] colors = texture.GetPixels ((int)(texture.width * tt.uv0.x), (int)(texture.height * tt.uv0.y), width, height);
+		ret = new Texture2D (width, height, TextureFormat.RGB24, false);
+		ret.SetPixels (colors);
+		ret.Apply (false);
+		ret.hideFlags = HideFlags.HideAndDontSave;
+		
+		return ret;
+	}
 }
 
 /// <summary>

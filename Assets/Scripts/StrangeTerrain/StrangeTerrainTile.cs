@@ -8,6 +8,5 @@ public class StrangeTerrainTile
 
 	public StrangeTerrainTile ()
 	{
-		textureIndex = Random.Range (0, 4);
 	}
 }
